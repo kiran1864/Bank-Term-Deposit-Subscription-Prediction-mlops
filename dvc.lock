@@ -1,0 +1,172 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/data_ingestion.py
+    deps:
+    - path: data/raw/bank.csv
+      hash: md5
+      md5: 8d1cc2ceea5c63e650e4d314250efdd3
+      size: 918960
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: 84eaab077c369b195888d51af845a984
+      size: 792
+    outs:
+    - path: data/ingested/bank.csv
+      hash: md5
+      md5: aa7f248e49edcfb829ca47c2565fa677
+      size: 930123
+  data_preprocessing:
+    cmd: python src/data_preprocessing.py
+    deps:
+    - path: data/ingested/bank.csv
+      hash: md5
+      md5: aa7f248e49edcfb829ca47c2565fa677
+      size: 930123
+    - path: src/data_preprocessing.py
+      hash: md5
+      md5: eebcc3b5c6e35a5806170aa68a0a05b5
+      size: 1788
+    params:
+      params.yaml:
+        drop_duration: true
+        random_state: 42
+        test_size: 0.2
+    outs:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: c649e45bd43d5cb4c613af55051c0822
+      size: 174346
+    - path: data/processed/train.csv
+      hash: md5
+      md5: a26928cdcb15f8ab6128867e5ad2fff0
+      size: 695840
+  feature_engineering:
+    cmd: python src/feature_engineering.py
+    deps:
+    - path: data/processed/test.csv
+      hash: md5
+      md5: c649e45bd43d5cb4c613af55051c0822
+      size: 174346
+    - path: data/processed/train.csv
+      hash: md5
+      md5: a26928cdcb15f8ab6128867e5ad2fff0
+      size: 695840
+    - path: src/feature_engineering.py
+      hash: md5
+      md5: 433e08fed04d1391aab8f797ac34f858
+      size: 1448
+    outs:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: 7a9876ca65c67206c13612d9dfa7d91b
+      size: 169872
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: 16e5ea64d4f71962837f72013368606b
+      size: 677974
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: f808c8315d6dca4ae90698ba1072c9d4
+      size: 6708
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 32020039926238305240e156f8ffdb4b
+      size: 26796
+  model_building:
+    cmd: python src/model_building.py
+    deps:
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: 16e5ea64d4f71962837f72013368606b
+      size: 677974
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 32020039926238305240e156f8ffdb4b
+      size: 26796
+    - path: src/model_building.py
+      hash: md5
+      md5: c7ae73ddccf199492e2ea15399283f4f
+      size: 20612
+    params:
+      params.yaml:
+        cv_folds: 5
+        experiment_name: bank_deposit_prediction
+        measurement:
+          training_time_repeats: 3
+          prediction_n_samples: 100
+          prediction_repeats: 3
+        model_cv_folds:
+          KNN: 3
+          SVM: 3
+          GradientBoosting: 3
+        n_trials: 30
+        random_state: 42
+        selection:
+          max_accuracy_gap_pct: 5.0
+          accuracy_tolerance_pct: 1.0
+          fallback_if_none_eligible: smallest_gap
+          gap_penalty_in_search: true
+          gap_penalty_weight: 1.0
+          weights:
+            model_size_mb: 0.3
+            training_time_seconds: 0.3
+            prediction_time_ms: 0.4
+    outs:
+    - path: models
+      hash: md5
+      md5: 033378926f4af3f9e8ca77121fa5dd3a.dir
+      size: 34125563
+      nfiles: 7
+    - path: reports/model_comparison.csv
+      hash: md5
+      md5: 52409f8bc5735e262053ca0b463caa1b
+      size: 567
+    - path: reports/model_comparison.md
+      hash: md5
+      md5: b25a938d9d2da59007a2c0b33af385a5
+      size: 789
+    - path: reports/model_selection.json
+      hash: md5
+      md5: 1590444b9573c1f0b9ca354fd1057ed1
+      size: 5927
+  model_evaluation:
+    cmd: python src/model_evaluation.py
+    deps:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: 7a9876ca65c67206c13612d9dfa7d91b
+      size: 169872
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: f808c8315d6dca4ae90698ba1072c9d4
+      size: 6708
+    - path: models
+      hash: md5
+      md5: 033378926f4af3f9e8ca77121fa5dd3a.dir
+      size: 34125563
+      nfiles: 7
+    - path: reports/model_comparison.csv
+      hash: md5
+      md5: 52409f8bc5735e262053ca0b463caa1b
+      size: 567
+    - path: reports/model_selection.json
+      hash: md5
+      md5: 1590444b9573c1f0b9ca354fd1057ed1
+      size: 5927
+    - path: src/model_evaluation.py
+      hash: md5
+      md5: 47748b9a83b36849e0476c36830ea792
+      size: 7511
+    params:
+      params.yaml:
+        experiment_name: bank_deposit_prediction
+    outs:
+    - path: reports/evaluation_details.json
+      hash: md5
+      md5: 446f7e7226134daac72b5787dab44400
+      size: 6479
+    - path: reports/metrics.json
+      hash: md5
+      md5: 7a05037f005955d1f1333de33a992e30
+      size: 670

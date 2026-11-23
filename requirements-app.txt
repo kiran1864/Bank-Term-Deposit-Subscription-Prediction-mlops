@@ -1,0 +1,7 @@
+# Serving dependencies. PIN scikit-learn to the exact version used by `dvc repro`
+# (check with: python -c "import sklearn; print(sklearn.__version__)")
+numpy>=1.24,<3
+pandas>=2.0,<3
+scikit-learn>=1.2,<2   # replace with ==<trained version>
+joblib>=1.3
+streamlit>=1.35

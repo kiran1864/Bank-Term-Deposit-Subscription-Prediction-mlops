@@ -1,0 +1,9 @@
+.git
+.dvc
+.venv
+venv
+__pycache__
+mlruns
+mlflow.db
+data/ingested
+data/processed

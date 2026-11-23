@@ -1,0 +1,23 @@
+artifact_path: file:///C:/Users/Kiran/OneDrive/Desktop/mlops bank project/mlruns/1/models/m-014ae8ad193f4f91b6b9f46934469a7f/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.11.9
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.9.1
+    skops_trusted_types: null
+mlflow_version: 3.18.0
+model_id: m-014ae8ad193f4f91b6b9f46934469a7f
+model_size_bytes: 24453309
+model_uuid: m-014ae8ad193f4f91b6b9f46934469a7f
+prompts: null
+run_id: ec55fb97505a48c9a88e64c5767dd1ca
+utc_time_created: '2026-11-23 09:53:32.384473'

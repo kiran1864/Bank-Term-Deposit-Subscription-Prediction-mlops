@@ -1,0 +1,42 @@
+# ---------------------------------------------------------------
+# Global settings
+# ---------------------------------------------------------------
+random_state: 42
+experiment_name: bank_deposit_prediction
+
+# ---------------------------------------------------------------
+# data_preprocessing.py
+# ---------------------------------------------------------------
+test_size: 0.2
+# Drop 'duration' (only known after the call ends -> target leakage)
+drop_duration: true
+
+# ---------------------------------------------------------------
+# model_building.py
+# ---------------------------------------------------------------
+n_trials: 30            # Optuna trials per model
+cv_folds: 5             # default StratifiedKFold splits
+
+# Optional per-model override of cv_folds (falls back to cv_folds)
+model_cv_folds:
+  KNN: 3
+  SVM: 3
+  GradientBoosting: 3
+
+# Champion selection policy
+selection:
+  max_accuracy_gap_pct: 5.0          # train - validation gap must be STRICTLY below this
+  accuracy_tolerance_pct: 1.0        # finalists = within this many pp of best validation accuracy
+  fallback_if_none_eligible: smallest_gap   # or "error"
+  gap_penalty_in_search: true        # penalise overfit trials inside Optuna objective
+  gap_penalty_weight: 1.0
+  weights:                           # cost weights among finalists (should sum to 1)
+    model_size_mb: 0.3
+    training_time_seconds: 0.3
+    prediction_time_ms: 0.4
+
+# Timing / size measurement
+measurement:
+  training_time_repeats: 3           # refits; median time is used
+  prediction_n_samples: 100          # single-row predictions timed
+  prediction_repeats: 3
