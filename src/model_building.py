@@ -534,4 +534,8 @@ def main():
     print(explanation)
     print(f"Champion model saved to: {champion_path}")
     print(f"Selection details: {SELECTION_PATH}")
-    print(f"Comparison report: {COMPARISON_CSV_PATH} / {COMPARISON_
+    print(f"Comparison report: {COMPARISON_CSV_PATH} / {COMPARISON_MD_PATH}")
+
+
+if __name__ == "__main__":
+    main()
