@@ -3,6 +3,9 @@ test set for the Bank dataset.
 """
 from pathlib import Path
 import json
+import os
+
+os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
 
 import joblib
 import mlflow
@@ -155,6 +158,9 @@ def main():
     with open(DETAILS_PATH, "w", encoding="utf-8") as file:
         json.dump(details, file, indent=4)
 
+    mlruns_dir = Path(os.getenv("MLFLOW_TRACKING_DIR", "mlruns")).resolve()
+    mlruns_dir.mkdir(parents=True, exist_ok=True)
+    mlflow.set_tracking_uri(mlruns_dir.as_uri())
     mlflow.set_experiment(config["experiment_name"])
     with mlflow.start_run(run_name="champion_evaluation"):
         mlflow.log_param("champion_model", champion_name)
