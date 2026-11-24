@@ -1,6 +1,7 @@
 FROM python:3.11-slim
 
 WORKDIR /app
+ENV PYTHONPATH=/app
 
 # Serving-only dependencies (no dvc / mlflow / optuna needed to run the app)
 COPY requirements-app.txt .
@@ -8,6 +9,7 @@ RUN pip install --no-cache-dir -r requirements-app.txt
 
 # Run `dvc pull` (or `dvc repro`) BEFORE `docker build` so models/model.pkl exists.
 COPY app.py .
+COPY src/ ./src/
 COPY models/model.pkl ./model.pkl
 COPY data/raw/bank.csv ./bank.csv
 COPY reports/ ./reports/
