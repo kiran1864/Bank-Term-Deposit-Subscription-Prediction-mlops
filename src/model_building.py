@@ -333,6 +333,9 @@ def main():
     default_cv_folds = int(config["cv_folds"])
     n_trials = int(config["n_trials"])
 
+    mlruns_dir = Path(os.getenv("MLFLOW_TRACKING_DIR", "mlruns")).resolve()
+    mlruns_dir.mkdir(parents=True, exist_ok=True)
+    mlflow.set_tracking_uri(mlruns_dir.as_uri())
     mlflow.set_experiment(config["experiment_name"])
 
     results = {}
