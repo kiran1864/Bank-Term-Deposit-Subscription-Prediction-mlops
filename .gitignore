@@ -13,4 +13,4 @@ mlflow.db
 .idea/
 /data/ingested/
 /data/processed/
-/models/
+/models/mlruns/ 
